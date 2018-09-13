@@ -464,9 +464,15 @@
 		}
 	});
 })($);
+// 初始化播放器
+(function($){
+	var $playBox = $(".z-play-box");
+	$playBox.height($playBox.width()* 9/16);
+})($);
 // 委托事件
 (function($){
 	$(".z-list").on("click","a",function(e){
 		console.log($(this).data("link"));
 	});
 })($);
+
