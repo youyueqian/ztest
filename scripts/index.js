@@ -468,6 +468,9 @@
 (function($){
 	var $playBox = $(".z-play-box");
 	$playBox.height($playBox.width()* 9/16);
+	$(".z-video").on("load",function(){
+		$playBox.append("<div class='z-video-ad'>广告</div>");
+	});
 })($);
 // 委托事件
 (function($){
