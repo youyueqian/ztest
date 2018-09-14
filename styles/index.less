@@ -1,9 +1,9 @@
-body,p,h2 {
+body,p,h2,h3,h4 {
 	margin: 0;
 	padding: 0;
 	font-family: "Microsoft YaHei", SimHei, helvetica, arial, verdana, tahoma, sans-serif;
 }
-section,div,body,header {
+section,div,body,header,ul {
 	box-sizing: border-box;
 }
 ul {
@@ -261,7 +261,7 @@ a,input {
 
 /*轮播图*/
 .z-carousel {
-	overflow: hidden;
+	overflow-x: hidden;
 	margin-bottom: 10px;
 	position: relative;
 }
@@ -477,18 +477,309 @@ a,input {
 	align-items: center;
 	justify-content: center;
 }
+/*选集区块*/
+.z-episodes {
+	border-bottom: 1px solid #ebebeb;
+	padding-bottom: 15px;
+}
 
-.z-play-full {
+.z-episodes h2,.z-abstract .p-h-nob,.z-comment h2 {
+	padding: 10px;
+	font-size: 17px;
+}
+
+.p-panels,.p-tab-pills {
+	width: 100%;
+	overflow: scroll;
+}
+
+.z-episodes-list ul li {
+	background-color: #f5f5f5;
+	border-radius: 4px;
+	margin: 0 2px;
+}
+
+.p-tab-pills li {
+	padding: 5px;
+}
+
+/*.p-tab-pills {
+	display: flex;
+	align-items: center;
+}
+
+.p-tab-pills li {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+*/
+.p-tab-pills {
+	margin-bottom: 5px; 
+}
+
+.p-panel ul,.p-tab-pills {
+	display: flex;
+	align-items: stretch;
+}
+
+.p-panel ul li,.p-tab-pills li {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	padding: 20px;
+	white-space: nowrap;
+}
+
+.p-drama-set,.p-dram-setmore,.z-episodes-list .p-h {
+	display: none;
+}
+
+.z-episodes h2 {
+	display: flex;
+	justify-content: space-between;
+}
+
+.z-episodes-choice {
+	color: #2692ff;
+	font-weight: normal;
+}
+
+.z-episodes-list {
+/*	height: 60px;*/
+	width: 100%;
+	overflow-y: hidden;
+	overflow-x: scroll;
+}
+
+.z-episodes-list ul li:first-child {
+	margin-left: 4px;
+}
+
+.z-episodes-list ul li:last-child {
+	margin-right: 4px;
+}
+
+.z-episodes-list ul a {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #333;
+}
+
+/*剧情摘要*/
+.z-abstract .look-all-drama {
+	display: none;
+}
+
+.p-item {
+	padding: 5px 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+}
+.p-item-info {
+	width: 70%;
+	font-size: 12px;
+	height: 50px;
+	overflow-y: scroll;
+	color: #999;
+	padding-left: 12px;
+}
+
+.list-point {
+	display: none;
+}
+
+.p-drama-list .p-list {
+	width: 30%;
+	display: block;
+	position: relative;
+}
+
+.p-drama-list .p-thumb img {
+	width: 100%;
+}
+
+.pos-bottom {
 	position: absolute;
+	bottom: 2px;
+	left: 0px;
+	width: 100%;
+	text-align: right;
+	padding: 5px;
+}
+
+.p-time {
+	font-size: 12px;
+	color: #FFF;
+	padding: 1px;
+	display: inline-block;
+	background-color: rgba(0,0,0,.3);
+}
+
+.item-title {
+	display: flex;
+	justify-content: space-between;
+}
+
+.item-title a{
+	flex: 1;
+	font-size: 14px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.item-title .p-num {
+	width:80px;
+}
+
+/*.z-abstract-list li div.abstract {
+	width: 70%;
+	padding-left: 12px;
+}*/
+
+.z-abstract-list li .header {
+	display: flex;
+	font-size: 14px;
+	justify-content: space-between;
+	width: 100%;
+	align-items: center;
+}
+
+.z-abstract-list .header h3 {
+	font-weight: normal;
+	color: #555;
+	flex: 1;
+}
+
+.z-abstract-list .header span {
+	font-size: 12px;
+	width: 65px;
+	color: #999;
+}
+
+.z-abstract-list p {
+	font-size: 12px;
+	height: 50px;
+	overflow-y: scroll;
+	color: #999;
+}
+
+.z-abstract-list {
+	border-bottom: 1px solid #ebebeb;
+	padding-bottom: 15px;
+}
+
+/*评论区块*/
+.z-comment li {
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	border-top: 1px solid #ebebeb; 
+}
+
+.z-comment li img {
+	width: 35px;
+	height: 35px;
+	border-radius: 50%;
+}
+
+.z-comment li .content-box {
+	padding-left: 10px;
+	font-size: 12px;
+}
+.z-comment li .content-box h4 {
+	color: #2692ff;
+	font-weight: normal;
+	font-size: 14px;
+}
+
+.z-comment li .content-box .comment-time {
+	color: #ccc;
+}
+/*模态框*/
+.z-modal {
+	position: fixed;
 	top: 0;
-	bottom: 0;
 	left: 0;
+	bottom: 0;
 	right: 0;
+	background-color: rgba(0,0,0,.4);
 	z-index: 1000;
 }
 
-.z-play-full .z-video {
+.z-modal .modal-content{
+	position: fixed;
+	bottom: 0;
+	height: 500px;
 	width: 100%;
+	background-color: #FFF;
+	z-index: 1100;
+}
+
+.modal-content-header {
+	display: flex;
+	height: 30px;
+	border-bottom: 1px solid #ebebeb;
+	padding: 0 10px;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.modal-content-header h2 {
+	font-weight: normal;
+	font-size: 16px;
+	width: 40%;
+	display: flex;
+	justify-content: space-between;
+}
+
+.modal-content-header .modal-close {
+	font-size: 14px;
+}
+
+.modal-list {
+	overflow: scroll;
 	height: 100%;
-	border: 0;
+}
+
+.modal-list .modal-episodes {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+}
+
+.modal-list .modal-episodes li {
+	width: 50px;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+.selected {
+	font-weight: bold;
+	color: #333;
+}
+
+.modal-abstract li {
+	padding: 10px;
+}
+
+.modal-abstract li {
+	font-weight: normal;
+	font-size: 14px;
+	color: #555;
+	border-bottom: 1px solid #ebebeb;
+}
+
+.modal-abstract li p{
+	color: #999;
+	font-size: 12px;
 }
