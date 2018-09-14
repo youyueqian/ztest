@@ -334,6 +334,9 @@
 				$currentUl.removeAttr("loading");
 			});
 		}
+		$(".z-tab .play").parent().removeClass("current");
+		$(".z-play").addClass("hidden");
+		$(".z-show").removeClass("hidden");
 		$("[data-target="+className+"]").parent().parent().children().removeClass("current");
 		$("[data-target="+className+"]").parent().addClass("current");
 	}
@@ -464,18 +467,168 @@
 		}
 	});
 })($);
-// 初始化播放器
+// 模态框初始化阻止滚动页面
+(function($,eWidth){	
+	$(".z-modal").on("touchmove",function(e){
+		var flag = false;
+		for(var i=0;i<e.originalEvent.path.length;i++){
+			if(e.originalEvent.path[i] == $(".modal-list").get(0)){
+				flag = true;
+				break;
+			}
+		}
+		if(!flag){
+			e.preventDefault();
+		}
+	});
+	var $modalWidth = $(window).width();
+	var eNum = Math.floor($modalWidth / eWidth);
+	var eMargin  = ($modalWidth - eNum * eWidth) / (2 * eNum);
+	$(".modal-episodes li").css({
+		margin: eMargin
+	});
+})($,50);
+// 显示初始化模态框内部,阻止事件冒泡
+(function($,window){
+	var startOffsetTop;
+	$(".z-episodes-choice").on("click",function(){
+		var $modal = $(".z-modal");
+		var $playBox = $(".z-play-box");
+		var playBoxHeight = $playBox.height();
+		var playBoxOffsetTop = $playBox.offset().top;
+		$(".modal-content").height($(window).height() - playBoxHeight - playBoxOffsetTop);
+		$(".modal-list").height($(".modal-content").height() - $(".modal-content-header").height());
+		$modal.toggleClass("hidden");
+		startOffsetTop = $(".modal-episodes").offset().top;
+	});
+	var currentY;
+	$(".modal-episodes,.modal-abstract").on("touchmove",function(e){
+		var offsetTop = $(this).offset().top;
+		var nowY = e.touches[0].clientY;
+		if(startOffsetTop - offsetTop >= $(this).height() - $(this).parent().height() && nowY < currentY){
+			e.preventDefault();
+		}
+		currentY = e.touches[0].clientY;
+	}).on("touchstart",function(e){
+		currentY = e.touches[0].clientY;
+	});
+})($,window);
+// 模态框关闭按钮事件响应
 (function($){
-	var $playBox = $(".z-play-box");
-	$playBox.height($playBox.width()* 9/16);
-	$(".z-video").on("load",function(){
-		$playBox.append("<div class='z-video-ad'>广告</div>");
+	$(".model-close").on("click",function(){
+		$(".z-modal").addClass("hidden");
 	});
 })($);
-// 委托事件
+// 模态框内容切换
 (function($){
-	$(".z-list").on("click","a",function(e){
-		console.log($(this).data("link"));
+	$(".z-modal .choice,.z-modal .abstract").on("click",function(){
+		$(this).toggleClass("selected");
+		$(this).siblings().toggleClass("selected");
+		$("."+$(this).data("target")).removeClass("hidden");
+		$("."+$(this).data("target")).siblings().addClass("hidden");
 	});
 })($);
+// 视频数据加载器
+(function($,setTimeout){
+	function Player(options){
+		this._init(options);
+	}
 
+	Player.prototype = {
+		_init: function(options){
+			this.dom = $(options.dom || ".z-video");
+			this.playerBox = $(options.playerBox ||".z-play-box");
+			this.prevAd = options.prevAd || "<div class='z-video-ad'>广告</div>";
+			this.prevAdInterval = options.prevAdInterval || 5000;
+			this.api = options.api || "https://jx.618g.com/?url=";
+		},
+		init: function initPlayer(src){
+			// 初始化播放器尺寸
+			this.playerBox.height(this.playerBox.width()* 9/16);
+			// 设置播放前广告
+			if(this.prevAd.indexOf("<") == 0){
+				this.prevAd = $(this.prevAd);
+				this.playerBox.append(this.prevAd);
+			}else{
+				this.prevAd = $(this.prevAd);
+			}
+			// 加载视频
+			this.dom.attr("src",this.api + this.formatSrc(src));
+			// 加载广告
+			this.dom.on("load",function(){
+				setTimeout(function(){
+					this.prevAd.remove();
+				}.bind(this),this.prevAdInterval);
+			}.bind(this));
+		},
+		formatSrc: function (src) {
+			if(src.indexOf("http:")==-1){
+				return "http:" + src;
+			}else{
+				return src;
+			}
+		}
+	}
+
+	window.Player = Player;
+})($,setTimeout);
+// 视频数据列表加载器
+(function ($,DataLoader) {
+	function VideoListLoader(options){
+		this._init(options);
+	}
+
+	VideoListLoader.prototype = {
+		_init: function(options){
+			this.url = options && options.url || "https://list.youku.com/show/module";
+			this.tab = options && options.tab || "showInfo";
+			this.callback = "callback";
+			this.container = options && options.container || ".z-episodes-list";
+		},
+		load: function(sid){
+			var dataIntegrator = {
+				init: function(data){
+					$(this.container).html(data.html);
+					$(".p-drama-list").appendTo($(".z-abstract"));
+				}.bind(this)
+			};
+			var dataLoader = new DataLoader({
+				url: this.url,
+				callback: this.callback,
+				data: {
+					tab: this.tab,
+					id: sid
+				}
+			});
+			dataLoader.load(dataIntegrator);
+		},
+
+	}
+	window.VideoListLoader = VideoListLoader;
+})($,DataLoader);
+// 委托事件显示载入数据到播放区块
+(function($){
+	$(".z-list,.z-search-data").on("click","a",function(e){
+		var vlink = $(this).data("vlink");
+		var sid = $(this).data("sid");
+		var player = new Player({});
+		$(".z-show").addClass("hidden");
+		$(".z-play").removeClass("hidden");
+		$(".z-tab li").removeClass("current");
+		$(".z-tab .play").parent().addClass("current");
+		player.init(vlink);//初始化播放器
+		var className = $(this).data("target");
+		// 导航栏切换到乐酷
+		$("[data-target="+className+"]").parent().parent().children().removeClass("current");
+		$("[data-target="+className+"]").parent().addClass("current");
+		// 页面滚动顶部
+		$(window).scrollTop(0);
+		// 加载集数列表
+		var videoListLoader = new VideoListLoader();
+		videoListLoader.load(sid);
+	});
+
+	$(".z-search-data").on("click","a",function(){
+		$(".z-search-data ul").html("");
+	});
+})($);
